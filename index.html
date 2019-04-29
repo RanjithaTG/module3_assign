@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="ShoppingListCheckOff">
+<html lang="en" ng-app="NarrowItDownApp">
   <head>
     <title>Shopping List Check Off</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,51 +7,31 @@
     <script src="app.js"></script>
     <link rel="stylesheet" href="styles/bootstrap.min.css">
     <style>
-    .emptyMessage {
-      font-weight: bold;
-      color: orange;
-      font-size: 1.2em;
-    }
-    li {
-      margin-bottom: 7px;
-      font-size: 1.2em;
-    }
-    li > button {
-      margin-left: 6px;
-    }
-    button > span {
-      color: green;
-    }
+     <style>
+         .emptyMessage {
+         font-weight: bold;
+         color: red;
+         font-size: 1.2em;
+         width: 200px;
+         }
+      </style>
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Shopping List Check Off</h1>
-      <div class="row">
-        <!-- To Buy List -->
-        <div class="col-md-6" ng-controller='ToBuyController as buy'>
-          <h2>To Buy:</h2>
-          <ul>
-            <li ng-repeat="item in buy.items">
-              Buy {{ item.quantity }} {{ item.name }}
-              <button ng-click="buy.buyItem($index);" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span> Bought</button>
-            </li>
-          </ul>
-          <div ng-if="buy.items.length == 0" class="emptyMessage">Everything is bought!</div>
-        </div>
-
-        <!-- Already Bought List -->
-        <div class="col-md-6" ng-controller='AlreadyBoughtController as alreadybought'>
-          <h2>Already Bought:</h2>
-          <ul>
-            <li ng-repeat="item in alreadybought.items">
-              Bought {{ item.quantity }} {{ item.name }}
-            </li>
-          </ul>
-          <div ng-if="alreadybought.items.length == 0" class="emptyMessage">Nothing bought yet.</div>
-        </div>
+         <h1>Narrow Down To find your favourite!!!</h1>
+                <div ng-controller='NarrowItDownController as menu'>
+            <div class="form-group">
+               <input ng-model="menu.searchTerm" type="text" placeholder="search term" class="form-control">
+            </div>
+            <div class="form-group narrow-button">
+               <button class="btn btn-primary" ng-click="menu.search();">Narrow It Down For Me!</button>
+            </div>
+            <div style="height:50px"></div>
+            <div class="emptyMessage">{{menu.nothingFound}}</div>
+            <found-items
+               items="menu.foundItems" title="{{menu.foundItems}}"   on-remove="menu.removeItem(index)"></found-items>
+         </div>
       </div>
-    </div>
-
   </body>
 </html>
