@@ -60,7 +60,7 @@
         menuSearch.search = function() {
             menuSearch.nothingFound = "";
             if (menuSearch.searchItem) { // check if empty
-                var promise = MenuSearchService.getMatchedMenuItems(menuSearch.searchItem.toLowerCase());
+                var promise = MenuSearchService.getMatchedItems(menuSearch.searchItem.toLowerCase());
                 promise.then(function(foundItems) {
                     if (foundItems.length == 0) {
                         menuSearch.nothingFound = "Nothing found";
