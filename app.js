@@ -32,8 +32,8 @@
         menuSearch.foundItems = "";
         menuSearch.search = function() {
             menuSearch.nothingFound = "";
-            if (menuSearch.searchTerm) { // check if empty
-                var promise = MenuSearchService.getMatchedMenuItems(menuSearch.searchTerm.toLowerCase());
+            if (menuSearch.searchItem) { // check if empty
+                var promise = MenuSearchService.getMatchedMenuItems(menuSearch.searchItem.toLowerCase());
                 promise.then(function(foundItems) {
                     if (foundItems.length == 0) {
                         menuSearch.nothingFound = "Nothing found";
@@ -55,7 +55,7 @@
 
     function MenuSearchService($http, RestApiBasePath) {
         var service = this;
-        service.getMatchedItems = function(searchTerm) {
+        service.getMatchedItems = function(searchItem) {
             var response = $http({
                 method: "GET",
                 url: (RestApiBasePath + "/menu_items.json")
