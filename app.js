@@ -1,51 +1,81 @@
 (function() {
   'use strict';
 
-  angular.module('ShoppingListCheckOff', [])
-  .controller('ToBuyController', ToBuyController)
-  .controller('AlreadyBoughtController', AlreadyBoughtController)
-  .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
+  angular.module('NarrowItDownApp', [])
+  .controller('NarrowItDownController', NarrowItDownController )
+  .constant('RestApiBasePath', "https://davids-restaurant.herokuapp.com")
+  .directive('foundItems', FoundItemsDirective);
+  .service('MenuSearchService', MenuSearchService);
+  
+     function FoundItemsDirective() {
+        var ddo = {
+            templateUrl: 'itemsFound.html',
+            scope: {
+                items: '<',
+                myTitle: '@title',
+                onRemove: '&'
+            },
+            controller: NarrowItDownController,
+            controllerAs: 'menuSearch',
+            bindToController: true
+        };
 
-  ToBuyController.$inject = ['ShoppingListCheckOffService'];
-  AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+        return ddo;
+    }
+ function FoundItemsDirectiveController() {
+        var menu = this;
+    }
+  NarrowItDownController.$inject = ['MenuSearchService'];
+  function NarrowItDownController(MenuSearchService) {
+        var menuSearch = this;
+        menuSearch.searchItem = "";
+        menuSearch.foundItems = "";
+        menuSearch.search = function() {
+            menuSearch.nothingFound = "";
+            if (menuSearch.searchTerm) { // check if empty
+                var promise = MenuSearchService.getMatchedMenuItems(menu.searchTerm.toLowerCase());
+                promise.then(function(foundItems) {
+                    if (foundItems.length == 0) {
+                        menuSearch.nothingFound = "Nothing found";
+                    }
+                    menuSearch.foundItems = foundItems;
+                })
 
-  function ToBuyController(ShoppingListCheckOffService){
-    var buy = this;
-    buy.items = ShoppingListCheckOffService.getItemsToBuy();
-    buy.buyItem = function(index) {
-      ShoppingListCheckOffService.buyItem(index);
-    };
-  };
+            } else {
+                menuSearch.nothingFound = "Nothing found";
+                menuSearch.foundItems = "";
+            }
+        };
+        menuSearch.removeItem = function(itemIndex) {
+            menuSearch.foundItems.splice(itemIndex, 1);
+        };
+    }
 
-  function AlreadyBoughtController(ShoppingListCheckOffService) {
-    var bought = this;
-    bought.items = ShoppingListCheckOffService.getBoughtItems();
-  };
+  MenuSearchService.$inject = ['$http', 'RestApiBasePath']
 
-  function ShoppingListCheckOffService() {
-    var service = this;
-    var toBuyItems = [
-      { name: "cookies", quantity: 10 },
-      { name: "milk", quantity: 1 },
-      { name: "chips", quantity: 5},
-      { name: "sugary drinks", quantity: 10 },
-      { name: "peptin bezmo", quantity: 2 }
-    ];
-    var boughtItems = [];
+    function MenuSearchService($http, RestApiBasePath) {
+        var service = this;
+        service.getMatchedItems = function(searchTerm) {
+            var response = $http({
+                method: "GET",
+                url: (RestApiBasePath + "/menu_items.json")
+            });
 
-    service.getItemsToBuy = function() {
-      return toBuyItems;
-    };
-
-    service.getBoughtItems = function() {
-      return boughtItems;
-    };
-
-    service.buyItem = function(itemIndex) {
-      var item = toBuyItems[itemIndex];
-      boughtItems.push(item);
-      toBuyItems.splice(itemIndex, 1);
-    };
-  };
+            return response.then(function(result) {
+                var menuData = result.data;
+                var foundItems = [];
+                menuData.menu_items.forEach(function(item) {
+                    if (item.description.indexOf(searchTerm) != -1) {
+                        foundItems.push({
+                            name: item.name,
+                            short_name: item.short_name,
+                            description: item.description
+                        });
+                    }
+                });
+                return foundItems;
+            });
+        };
+    }
 
 })();
