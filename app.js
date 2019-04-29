@@ -33,7 +33,7 @@
         menuSearch.search = function() {
             menuSearch.nothingFound = "";
             if (menuSearch.searchTerm) { // check if empty
-                var promise = MenuSearchService.getMatchedMenuItems(menu.searchTerm.toLowerCase());
+                var promise = MenuSearchService.getMatchedMenuItems(menuSearch.searchTerm.toLowerCase());
                 promise.then(function(foundItems) {
                     if (foundItems.length == 0) {
                         menuSearch.nothingFound = "Nothing found";
