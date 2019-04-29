@@ -40,7 +40,7 @@
                 var menuData = result.data;
                 var foundItems = [];
                 menuData.menu_items.forEach(function(item) {
-                    if (item.description.indexOf(searchTerm) != -1) {
+                    if (item.description.indexOf(searchItem) != -1) {
                         foundItems.push({
                             name: item.name,
                             short_name: item.short_name,
