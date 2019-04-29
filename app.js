@@ -25,31 +25,7 @@
  function FoundItemsDirectiveController() {
         var menu = this;
     }
-  NarrowItDownController.$inject = ['MenuSearchService'];
-  function NarrowItDownController(MenuSearchService) {
-        var menuSearch = this;
-        menuSearch.foundItems = "";
-        menuSearch.search = function() {
-            menuSearch.nothingFound = "";
-            if (menuSearch.searchItem) { // check if empty
-                var promise = MenuSearchService.getMatchedMenuItems(menuSearch.searchItem.toLowerCase());
-                promise.then(function(foundItems) {
-                    if (foundItems.length == 0) {
-                        menuSearch.nothingFound = "Nothing found";
-                    }
-                    menuSearch.foundItems = foundItems;
-                })
-
-            } else {
-                menuSearch.nothingFound = "Nothing found";
-                menuSearch.foundItems = "";
-            }
-        };
-        menuSearch.removeItem = function(itemIndex) {
-            menuSearch.foundItems.splice(itemIndex, 1);
-        };
-    }
-
+  
   MenuSearchService.$inject = ['$http', 'RestApiBasePath']
 
     function MenuSearchService($http, RestApiBasePath) {
@@ -74,6 +50,31 @@
                 });
                 return foundItems;
             });
+        };
+    }
+  
+  NarrowItDownController.$inject = ['MenuSearchService'];
+  function NarrowItDownController(MenuSearchService) {
+        var menuSearch = this;
+        menuSearch.foundItems = "";
+        menuSearch.search = function() {
+            menuSearch.nothingFound = "";
+            if (menuSearch.searchItem) { // check if empty
+                var promise = MenuSearchService.getMatchedMenuItems(menuSearch.searchItem.toLowerCase());
+                promise.then(function(foundItems) {
+                    if (foundItems.length == 0) {
+                        menuSearch.nothingFound = "Nothing found";
+                    }
+                    menuSearch.foundItems = foundItems;
+                })
+
+            } else {
+                menuSearch.nothingFound = "Nothing found";
+                menuSearch.foundItems = "";
+            }
+        };
+        menuSearch.removeItem = function(itemIndex) {
+            menuSearch.foundItems.splice(itemIndex, 1);
         };
     }
 
