@@ -16,7 +16,7 @@
                 onRemove: '&'
             },
             controller: NarrowItDownController,
-            controllerAs: 'menuSearch',
+            controllerAs: 'menu',
             bindToController: true
         };
 
